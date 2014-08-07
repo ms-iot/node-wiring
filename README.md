@@ -29,6 +29,26 @@ This package allows you to control the Intel Galileo natively with Node.js
 # Using the Module
 This module can be required at the top of your node application.
 
+## HelloBlinky
+
+```
+var io = require("./nodewiring");
+
+var led = 13;
+
+//setup
+io.ioInit()
+io.pinMode(led, 1);
+
+// loop
+while (1) {
+   io.digitalWrite(13, 0);
+   io.delay(500);
+   io.digitalWrite(13, 1);
+   io.delay(500);
+}
+```
+
 Include the `nodewiring.node` file in the same directory as your application file.
 ```js
 var io = require("./nodewiring");
@@ -42,7 +62,7 @@ var io = require("./nodewiring");
 
 **pinMode(pin, 1|0)**
 
-> Sets mode of pin 1 (INPUT) or 0 (OUTPUT)
+> Sets mode of pin 0 (INPUT) or 1 (OUTPUT)
 
 **digitalWrite(pin, 1|0)**
 
