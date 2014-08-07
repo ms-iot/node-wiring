@@ -114,14 +114,24 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
 
 	target->Set(v8::String::NewSymbol("ioInit"),
 		FunctionTemplate::New(IOInit)->GetFunction());
+
+  target->Set(v8::String::NewSymbol("pinMode"),
+		FunctionTemplate::New(PinMode)->GetFunction());
+
 	target->Set(v8::String::NewSymbol("digitalWrite"),
 		FunctionTemplate::New(DigitalWrite)->GetFunction());
+
 	target->Set(v8::String::NewSymbol("digitalRead"),
 		FunctionTemplate::New(DigitalRead)->GetFunction());
+
+  target->Set(v8::String::NewSymbol("analogWrite"),
+		FunctionTemplate::New(AnalogWrite)->GetFunction());
+
+	target->Set(v8::String::NewSymbol("analogRead"),
+		FunctionTemplate::New(AnalogRead)->GetFunction());
+    
 	target->Set(v8::String::NewSymbol("delay"),
 		FunctionTemplate::New(Delay)->GetFunction());
-	target->Set(v8::String::NewSymbol("pinMode"),
-		FunctionTemplate::New(PinMode)->GetFunction());
 }
 
 NODE_MODULE(nodewiring, init)
