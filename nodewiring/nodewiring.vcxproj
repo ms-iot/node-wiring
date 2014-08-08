@@ -61,7 +61,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>mincore.lib;C:\Users\t-cobroo\.node-gyp\0.10.29\ia32\node.lib</AdditionalDependencies>
+      <AdditionalDependencies>mincore.lib;%HOMEPATH%\.node-gyp\0.10.29\ia32\node.lib</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:ole32.lib /NODEFAULTLIB:kernel32.lib /NODEFAULTLIB:user32.lib /NODEFAULTLIB:advapi32.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
