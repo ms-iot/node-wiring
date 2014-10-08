@@ -64,6 +64,20 @@ Handle<Value> AnalogWrite(const Arguments& args) {
 	return Undefined();
 }
 
+Handle<Value> AnalogWriteResolution(const Arguments& args) {
+    HandleScope scope;
+    if (args.Length() != 1) {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 1 argument to write resolution."))
+            );
+    }
+
+    Local<Integer> resolution = args[0]->ToInteger();
+    analogWriteResolution(static_cast<int>(resolution->Value()));
+
+    return Undefined();
+}
+
 Handle<Value> AnalogRead(const Arguments& args) {
 	HandleScope scope;
 	if (args.Length() != 1) {
@@ -76,6 +90,20 @@ Handle<Value> AnalogRead(const Arguments& args) {
 	int value = analogRead(static_cast<int>(pin->Value()));
 
 	return scope.Close(Integer::New(value));
+}
+
+Handle<Value> AnalogReadResolution(const Arguments& args) {
+    HandleScope scope;
+    if (args.Length() != 1) {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 1 argument to read resolution."))
+            );
+    }
+
+    Local<Integer> resolution = args[0]->ToInteger();
+    analogReadResolution(static_cast<int>(resolution->Value()));
+
+    return Undefined();
 }
 
 Handle<Value> Millis(const Arguments& args) {
@@ -164,6 +192,45 @@ Handle<Value> ShiftOut(const Arguments& args) {
     return Undefined();
 }
 
+
+Handle<Value> Tone(const Arguments& args) {
+    if (args.Length() == 2) {
+        Local<Integer> pin = args[0]->ToInteger(); // int
+        Local<Uint32> frequency = args[1]->ToUint32(); // unsigned int
+        tone(static_cast<int>(pin->Value()), static_cast<int>(frequency->Value()));
+
+        return Undefined();
+    }
+    else if (args.Length() == 3)
+    {
+        Local<Integer> pin = args[0]->ToInteger(); // int
+        Local<Uint32> frequency = args[1]->ToUint32(); // unsigned int
+        Local<Uint32> duration = args[2]->ToUint32(); // unsigned long
+
+        tone(static_cast<int>(pin->Value()), static_cast<unsigned int>(frequency->Value()), static_cast<unsigned long>(duration->Value()));
+
+        return Undefined();
+    }
+    else
+    {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 2 or 3 arguments (pin and frequency) or (pin, frequency, and duration)."))
+            );
+    }
+}
+
+Handle<Value> NoTone(const Arguments& args) {
+    if (args.Length() != 1) {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 1 argument, pin."))
+            );
+    }
+    Local<Integer> pin = args[0]->ToInteger();
+    noTone(static_cast<int>(pin->Value()));
+
+    return Undefined();
+}
+
 /*
 Export all the functions for module
 */
@@ -197,7 +264,7 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
 	target->Set(v8::String::NewSymbol("ioInit"),
 		FunctionTemplate::New(IOInit)->GetFunction());
 
-  target->Set(v8::String::NewSymbol("pinMode"),
+    target->Set(v8::String::NewSymbol("pinMode"),
 		FunctionTemplate::New(PinMode)->GetFunction());
 
 	target->Set(v8::String::NewSymbol("digitalWrite"),
@@ -206,11 +273,17 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
 	target->Set(v8::String::NewSymbol("digitalRead"),
 		FunctionTemplate::New(DigitalRead)->GetFunction());
 
-  target->Set(v8::String::NewSymbol("analogWrite"),
+    target->Set(v8::String::NewSymbol("analogWrite"),
 		FunctionTemplate::New(AnalogWrite)->GetFunction());
+
+    target->Set(v8::String::NewSymbol("analogWriteResolution"),
+        FunctionTemplate::New(AnalogWriteResolution)->GetFunction());
 
 	target->Set(v8::String::NewSymbol("analogRead"),
 		FunctionTemplate::New(AnalogRead)->GetFunction());
+
+    target->Set(v8::String::NewSymbol("analogReadResolution"),
+        FunctionTemplate::New(AnalogReadResolution)->GetFunction());
 
     target->Set(v8::String::NewSymbol("delay"),
         FunctionTemplate::New(Delay)->GetFunction());
@@ -229,6 +302,12 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
 
     target->Set(v8::String::NewSymbol("shiftOut"),
         FunctionTemplate::New(ShiftOut)->GetFunction());
+
+    target->Set(v8::String::NewSymbol("tone"),
+        FunctionTemplate::New(Tone)->GetFunction());
+
+    target->Set(v8::String::NewSymbol("noTone"),
+        FunctionTemplate::New(NoTone)->GetFunction());
 }
 
 NODE_MODULE(nodewiring, init)
