@@ -6,10 +6,10 @@
 #include <Windows.h>
 #include "arduino.h"
 
-
 using namespace node;
 using namespace v8;
 
+// Arduino Functions
 Handle<Value> IOInit(const Arguments& args) {
 	HandleScope scope;
 	ArduinoInit();
@@ -171,6 +171,29 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
 {
 	HandleScope scope;
 
+    // Global Variables
+    target->Set(v8::String::New("LOW"), v8::Number::New(LOW));
+    target->Set(v8::String::New("HIGH"), v8::Number::New(HIGH));
+
+    target->Set(v8::String::New("INPUT"), v8::Number::New(INPUT));
+    target->Set(v8::String::New("OUTPUT"), v8::Number::New(OUTPUT));
+    target->Set(v8::String::New("INPUT_PULLUP"), v8::Number::New(INPUT_PULLUP));
+
+    target->Set(v8::String::New("CHANGE"), v8::Number::New(CHANGE));
+    target->Set(v8::String::New("FALLING"), v8::Number::New(FALLING));
+    target->Set(v8::String::New("RISING"), v8::Number::New(RISING));
+
+    target->Set(v8::String::New("LSBFIRST"), v8::Number::New(LSBFIRST));
+    target->Set(v8::String::New("MSBFIRST"), v8::Number::New(MSBFIRST));
+
+    target->Set(v8::String::New("WLED"), v8::Number::New(WLED));
+    target->Set(v8::String::New("LED_BUILTIN"), v8::Number::New(LED_BUILTIN));
+
+    target->Set(v8::String::New("PI"), v8::Number::New(PI));
+    target->Set(v8::String::New("HALF_PI"), v8::Number::New(HALF_PI));
+    target->Set(v8::String::New("TWO_PI"), v8::Number::New(TWO_PI));
+
+    // Arduino Functions
 	target->Set(v8::String::NewSymbol("ioInit"),
 		FunctionTemplate::New(IOInit)->GetFunction());
 
