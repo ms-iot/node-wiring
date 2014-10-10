@@ -99,6 +99,28 @@ while (1) {
    console.log('Calling Spi End');
    spi.end();
    
+   // Wire/I2C Tests
+   console.log('\n----- Wire/I2C Tests -----');
+   var wire = galileo.Wire();
+   console.log('Wire Begin');
+   wire.begin();
+   // console.log('Wire BeginTransmission');
+   // wire.beginTransmission();
+   // console.log('Wire EndTransmission');
+   // wire.endTransmission();
+   // console.log('Wire RequestFrom');
+   // wire.requestFrom();
+   // console.log('Wire Write');
+   // wire.write();
+   console.log('Wire Available');
+   wire.available();
+   console.log('Wire Read');
+   wire.read();
+   console.log('Wire OnReceive');
+   wire.onReceive();
+   console.log('Wire OnRequest');
+   wire.onRequest();
+   
    console.log('\n----- End of Loop -----\n\n');
    galileo.delay(5000);
 }

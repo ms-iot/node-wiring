@@ -362,6 +362,200 @@ v8::Handle<Value> SpiNodeWrapper::SpiSetBitOrder(const Arguments& args)
 
 }
 
+/* Wire Wrapper Class and functions */
+
+class WireNodeWrapper : public node::ObjectWrap
+{
+public:
+    static void Init(v8::Handle<v8::Object> exports);
+private:
+    static v8::Persistent<v8::Function> constructor;
+    static TwoWire wireInstance;
+
+    WireNodeWrapper()
+    {}
+    ~WireNodeWrapper()
+    {}
+
+    static v8::Handle<v8::Value> New(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireBegin(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireRequestFrom(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireBeginTransmission(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireEndTransmission(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireWrite(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireAvailable(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireRead(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireOnReceive(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireOnRequest(const v8::Arguments& args);
+};
+
+// These need to be declared outside of the class as well
+TwoWire WireNodeWrapper::wireInstance;
+Persistent<Function> WireNodeWrapper::constructor;
+
+void WireNodeWrapper::Init(v8::Handle<v8::Object> exports)
+{
+    // Prepare constructor template
+    Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
+    tpl->SetClassName(v8::String::NewSymbol("Wire"));
+    tpl->InstanceTemplate()->SetInternalFieldCount(6);
+
+    // Prototype
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("begin"), FunctionTemplate::New(WireBegin)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("requestFrom"), FunctionTemplate::New(WireRequestFrom)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("beginTransmission"), FunctionTemplate::New(WireBeginTransmission)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("endTransmission"), FunctionTemplate::New(WireEndTransmission)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("write"), FunctionTemplate::New(WireWrite)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("available"), FunctionTemplate::New(WireAvailable)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("read"), FunctionTemplate::New(WireRead)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("onReceive"), FunctionTemplate::New(WireOnReceive)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("onRequest"), FunctionTemplate::New(WireOnRequest)->GetFunction());
+
+    constructor = Persistent<Function>::New(tpl->GetFunction());
+    exports->Set(v8::String::NewSymbol("Wire"), constructor);
+}
+
+v8::Handle<v8::Value> WireNodeWrapper::New(const v8::Arguments& args)
+{
+    HandleScope scope;
+
+    if (args.IsConstructCall()) {
+        // Invoked as constructor: `new MyObject(...)`
+        double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
+        WireNodeWrapper* obj = new WireNodeWrapper();
+        obj->Wrap(args.This());
+        return args.This();
+    }
+    else {
+        // Invoked as plain function `MyObject(...)`, turn into construct call.
+        const int argc = 1;
+        Local<Value> argv[argc] = { args[0] };
+        return scope.Close(constructor->NewInstance(argc, argv));
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireBegin(const Arguments& args)
+{
+    wireInstance.begin();
+    return Undefined();
+}
+
+v8::Handle<Value> WireNodeWrapper::WireBeginTransmission(const Arguments& args)
+{
+    if (args.Length() != 1) {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 1 argument, the slaveAddress."))
+            );
+    }
+    Local<Integer> slaveAddress = args[0]->ToInteger();
+    wireInstance.beginTransmission(static_cast<uint8_t>(slaveAddress->Value()));
+    return Undefined();
+}
+
+v8::Handle<Value> WireNodeWrapper::WireEndTransmission(const Arguments& args)
+{
+    HandleScope scope;
+    if (args.Length() != 0)
+    {
+        return scope.Close(Uint32::New(wireInstance.endTransmission()));
+    }
+    else if (args.Length() != 1)
+    {
+        Local<Integer> sendStop = args[0]->ToInteger();
+        return scope.Close(Uint32::New(wireInstance.endTransmission(static_cast<uint8_t>(sendStop->Value()))));
+    }
+    else
+    {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 0 or 1 argument."))
+            );
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireRequestFrom(const Arguments& args)
+{
+    HandleScope scope;
+    if (args.Length() != 2)
+    {
+        Local<Integer> address = args[0]->ToInteger();
+        Local<Integer> quantity = args[1]->ToInteger();
+
+        return scope.Close(Uint32::New(wireInstance.requestFrom(
+            static_cast<uint8_t>(address->Value()), 
+            static_cast<uint8_t>(quantity->Value()))));
+    }
+    else if (args.Length() != 3)
+    {
+        Local<Integer> address = args[0]->ToInteger();
+        Local<Integer> quantity = args[1]->ToInteger();
+        Local<Integer> sendStop = args[2]->ToInteger();
+
+        return scope.Close(Uint32::New(wireInstance.requestFrom(
+            static_cast<uint8_t>(address->Value()),
+            static_cast<uint8_t>(quantity->Value()),
+            static_cast<uint8_t>(sendStop->Value()))));
+    }
+    else
+    {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 0 or 1 argument."))
+            );
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireWrite(const Arguments& args)
+{
+    HandleScope scope;
+    if (args.Length() != 1)
+    {
+        Local<Integer> data = args[0]->ToInteger();
+
+        return scope.Close(Uint32::New(wireInstance.write(
+            static_cast<uint8_t>(data->Value()))));
+    }
+    else if (args.Length() != 2)
+    {
+        Local<Integer> address = args[0]->ToInteger(); // needs to be pointer
+        Local<Integer> cbData = args[1]->ToInteger();
+
+        //return scope.Close(Uint32::New(wireInstance.write(
+        //    static_cast<uint8_t>(address->Value()),
+        //    static_cast<uint8_t>(cbData->Value()))));
+        return Undefined();
+    }
+    else
+    {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 1 or 2 argument."))
+            );
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireAvailable(const Arguments& args)
+{
+    HandleScope scope;
+    return scope.Close(Uint32::New(wireInstance.available()));
+}
+
+v8::Handle<Value> WireNodeWrapper::WireRead(const Arguments& args)
+{
+    HandleScope scope;
+    return scope.Close(Uint32::New(wireInstance.read()));
+}
+
+v8::Handle<Value> WireNodeWrapper::WireOnReceive(const Arguments& args)
+{
+    Log("FEATURE UNAVAILABLE: Galileo cannot act as I2C slave device!");
+    return Undefined();
+}
+
+v8::Handle<Value> WireNodeWrapper::WireOnRequest(const Arguments& args)
+{
+    Log("FEATURE UNAVAILABLE: Galileo cannot act as I2C slave device!");
+    return Undefined();
+}
+
+
 /*
 Export all the functions for module
 */
@@ -437,6 +631,7 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
     target->Set(v8::String::New("SPI_CLOCK_DIV_DEFAULT"), v8::Number::New(SPI_CLOCK_DIV_DEFAULT));
 
     SpiNodeWrapper::Init(target);
+    WireNodeWrapper::Init(target);
 }
 
 
