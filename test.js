@@ -9,7 +9,7 @@ galileo.pinMode(led, 1);
 // loop
 while (1) {
    // Global Variables
-   console.log('----- Global Variables -----\n');
+   console.log('----- Global Variables -----');
    console.log("LOW: %d", galileo.LOW);
    console.log("HIGH: %d", galileo.HIGH);
    
@@ -32,7 +32,7 @@ while (1) {
    console.log("TWO_PI: %d", galileo.TWO_PI);
 
    // Digital Tests
-   console.log('----- Digital Tests -----\n');
+   console.log('\n----- Digital Tests -----');
    console.log('Digital Write');
    galileo.digitalWrite(13, 0);
    console.log("LED OFF");
@@ -56,18 +56,18 @@ while (1) {
    galileo.shiftOut(1, 2, galileo.LSBFIRST, 10);
    
    // Analog Tests
-   console.log('----- Analog Tests -----\n');
+   console.log('\n----- Analog Tests -----');
    console.log('AnalogWriteResolution');
-   galileo.analogWriteResolution(200);
+   galileo.analogWriteResolution(12);
    console.log('AnalogReadResolution');
-   galileo.analogReadResolution(100);
+   galileo.analogReadResolution(12);
    console.log('AnalogWrite');
-   galileo.analogWrite(3, 100);
+   galileo.analogWrite(3, 4095);
    
-   galileo.Log("Temperature: ");
+   console.log("Temperature: ");
    var temp = galileo.analogRead(-1);
-   galileo.Log(temp);
-   galileo.Log("\n");
+   console.log(temp);
+   console.log("\n");
    
    console.log('Tone with 2 arguments on pin 10');
    galileo.tone(10, 300);
@@ -82,5 +82,23 @@ while (1) {
    console.log('5 second delay');
    galileo.delay(5000);
    
-   console.log('----- End of Loop -----\n\n');
+   // SPI Tests
+   console.log('\n----- SPI Tests -----');
+   var spi = galileo.Spi();
+   console.log('Checking whether SPI is defined: ' + spi);
+   console.log('Calling Spi Begin');
+   spi.begin();
+   console.log('Calling Spi SetDataMode');
+   spi.setDataMode(galileo.SPI_MODE1);
+   console.log('Calling Spi SetClockDivider');
+   spi.setClockDivider(galileo.SPI_CLOCK_DIV64);
+   console.log('Calling Spi SetBitOrder');
+   spi.setBitOrder(galileo.LSBFIRST);
+   console.log('Calling Spi Transfer');
+   spi.transfer(10);
+   console.log('Calling Spi End');
+   spi.end();
+   
+   console.log('\n----- End of Loop -----\n\n');
+   galileo.delay(5000);
 }
