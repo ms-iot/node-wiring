@@ -77,7 +77,7 @@ while (1) {
    galileo.noTone(10);
    console.log('1 second delay');
    galileo.delay(1000);
-   console.log('Tone with 3 arguments on pin 10');
+   console.log('Tone with 3 arguments on pin 10 duration is 1 second');
    galileo.tone(10, 300, 1000);
    console.log('5 second delay');
    galileo.delay(5000);
@@ -104,14 +104,21 @@ while (1) {
    var wire = galileo.Wire();
    console.log('Wire Begin');
    wire.begin();
-   // console.log('Wire BeginTransmission');
-   // wire.beginTransmission();
-   // console.log('Wire EndTransmission');
-   // wire.endTransmission();
-   // console.log('Wire RequestFrom');
-   // wire.requestFrom();
-   // console.log('Wire Write');
-   // wire.write();
+   console.log('Wire BeginTransmission');
+   wire.beginTransmission(44); // transmit to device #44, device address is specified in datasheet
+   console.log('Wire RequestFrom with 2 paramaters');
+   wire.requestFrom();
+   console.log('Wire RequestFrom with 3 paramaters');
+   wire.requestFrom();
+   console.log('Wire Write: 1 argument');
+   wire.write(10);
+   console.log('Wire Write: 2 arguments');
+   var array = [0x01, 0x02, 0x03, 0x04];
+   wire.write(array);
+   console.log('Wire EndTransmission');
+   wire.endTransmission();
+   console.log('Wire EndTransmission with stop');
+   wire.endTransmission();
    console.log('Wire Available');
    wire.available();
    console.log('Wire Read');

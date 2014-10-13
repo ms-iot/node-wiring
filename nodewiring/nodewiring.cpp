@@ -18,8 +18,6 @@ Handle<Value> IOInit(const Arguments& args) {
 }
 
 Handle<Value> DigitalWrite(const Arguments& args) {
-	HandleScope scope;
-
 	if (args.Length() != 2) {
 		return ThrowException(
 			Exception::TypeError(v8::String::New("Must pass 2 arguments, pin and state"))
@@ -51,8 +49,6 @@ Handle<Value> DigitalRead(const Arguments& args) {
 }
 
 Handle<Value> AnalogWrite(const Arguments& args) {
-    HandleScope scope;
-
     if (args.Length() != 2) {
 		return ThrowException(
 			Exception::TypeError(v8::String::New("Must pass 2 arguments, pin and value."))
@@ -67,7 +63,6 @@ Handle<Value> AnalogWrite(const Arguments& args) {
 }
 
 Handle<Value> AnalogWriteResolution(const Arguments& args) {
-    HandleScope scope;
     if (args.Length() != 1) {
         return ThrowException(
             Exception::TypeError(v8::String::New("Must pass 1 argument to write resolution."))
@@ -95,7 +90,6 @@ Handle<Value> AnalogRead(const Arguments& args) {
 }
 
 Handle<Value> AnalogReadResolution(const Arguments& args) {
-    HandleScope scope;
     if (args.Length() != 1) {
         return ThrowException(
             Exception::TypeError(v8::String::New("Must pass 1 argument to read resolution."))
@@ -121,7 +115,6 @@ Handle<Value> Micros(const Arguments& args) {
 }
 
 Handle<Value> Delay(const Arguments& args) {
-	HandleScope scope;
 	if (args.Length() != 1) {
 		return ThrowException(
 			Exception::TypeError(v8::String::New("Must pass a value in ms."))
@@ -137,7 +130,6 @@ Handle<Value> Delay(const Arguments& args) {
 
 
 Handle<Value> DelayMicroseconds(const Arguments& args) {
-    HandleScope scope;
     if (args.Length() != 1) {
         return ThrowException(
             Exception::TypeError(v8::String::New("Must pass a value in microseconds."))
@@ -164,6 +156,7 @@ Handle<Value> PinMode(const Arguments& args) {
 }
 
 Handle<Value> ShiftIn(const Arguments& args) {
+    HandleScope scope;
     if (args.Length() != 3) {
         return ThrowException(
             Exception::TypeError(v8::String::New("Must pass 3 arguments, data_pin, clock_pin, and bit_order."))
@@ -173,9 +166,7 @@ Handle<Value> ShiftIn(const Arguments& args) {
     Local<Integer> clock_pin = args[1]->ToInteger();
     Local<Integer> bit_order = args[2]->ToInteger();
 
-    shiftIn(static_cast<uint8_t>(data_pin->Value()), static_cast<uint8_t>(clock_pin->Value()), static_cast<uint8_t>(bit_order->Value()));
-
-    return Undefined();
+    return scope.Close(Uint32::New(shiftIn(static_cast<uint8_t>(data_pin->Value()), static_cast<uint8_t>(clock_pin->Value()), static_cast<uint8_t>(bit_order->Value()))));
 }
 
 Handle<Value> ShiftOut(const Arguments& args) {
@@ -455,11 +446,11 @@ v8::Handle<Value> WireNodeWrapper::WireBeginTransmission(const Arguments& args)
 v8::Handle<Value> WireNodeWrapper::WireEndTransmission(const Arguments& args)
 {
     HandleScope scope;
-    if (args.Length() != 0)
+    if (args.Length() == 0)
     {
         return scope.Close(Uint32::New(wireInstance.endTransmission()));
     }
-    else if (args.Length() != 1)
+    else if (args.Length() == 1)
     {
         Local<Integer> sendStop = args[0]->ToInteger();
         return scope.Close(Uint32::New(wireInstance.endTransmission(static_cast<uint8_t>(sendStop->Value()))));
@@ -475,7 +466,7 @@ v8::Handle<Value> WireNodeWrapper::WireEndTransmission(const Arguments& args)
 v8::Handle<Value> WireNodeWrapper::WireRequestFrom(const Arguments& args)
 {
     HandleScope scope;
-    if (args.Length() != 2)
+    if (args.Length() == 2)
     {
         Local<Integer> address = args[0]->ToInteger();
         Local<Integer> quantity = args[1]->ToInteger();
@@ -484,7 +475,7 @@ v8::Handle<Value> WireNodeWrapper::WireRequestFrom(const Arguments& args)
             static_cast<uint8_t>(address->Value()), 
             static_cast<uint8_t>(quantity->Value()))));
     }
-    else if (args.Length() != 3)
+    else if (args.Length() == 3)
     {
         Local<Integer> address = args[0]->ToInteger();
         Local<Integer> quantity = args[1]->ToInteger();
@@ -506,20 +497,28 @@ v8::Handle<Value> WireNodeWrapper::WireRequestFrom(const Arguments& args)
 v8::Handle<Value> WireNodeWrapper::WireWrite(const Arguments& args)
 {
     HandleScope scope;
-    if (args.Length() != 1)
+    if (args.Length() == 1)
     {
         Local<Integer> data = args[0]->ToInteger();
 
         return scope.Close(Uint32::New(wireInstance.write(
             static_cast<uint8_t>(data->Value()))));
     }
-    else if (args.Length() != 2)
+    else if (args.Length() == 2)
     {
-        Local<Integer> address = args[0]->ToInteger(); // needs to be pointer
-        Local<Integer> cbData = args[1]->ToInteger();
+        // translation from a JS array to a uint8_t pointer that write is expecting
+        //Handle<Array> addressArray = Handle<Array>::Cast(args[0]);
+        //uint8_t *inputArray = new uint8_t[addressArray->Length()];
+        //for (uint32_t i = 0; i < addressArray->Length(); i++)
+        //{
+        //    Local<Object> obj = addressArray->CloneElementAt(i);
+        //    inputArray[i] = static_cast<uint8_t>(obj->ToInteger()->Value());
+        //}
+
+        //Local<Integer> cbData = args[1]->ToInteger();
 
         //return scope.Close(Uint32::New(wireInstance.write(
-        //    static_cast<uint8_t>(address->Value()),
+        //    inputArray,
         //    static_cast<uint8_t>(cbData->Value()))));
         return Undefined();
     }
