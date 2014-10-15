@@ -23,6 +23,7 @@ Handle<Value> DigitalWrite(const Arguments& args) {
 			Exception::TypeError(v8::String::New("Must pass 2 arguments, pin and state"))
 			);
 	}
+
 	Local<Integer> pin = args[0]->ToInteger();
 	Local<Integer> state = args[1]->ToInteger();
 
@@ -489,7 +490,7 @@ v8::Handle<Value> WireNodeWrapper::WireRequestFrom(const Arguments& args)
     else
     {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 0 or 1 argument."))
+            Exception::TypeError(v8::String::New("Must pass 2 or 3 arguments."))
             );
     }
 }
@@ -499,28 +500,42 @@ v8::Handle<Value> WireNodeWrapper::WireWrite(const Arguments& args)
     HandleScope scope;
     if (args.Length() == 1)
     {
-        Local<Integer> data = args[0]->ToInteger();
-
-        return scope.Close(Uint32::New(wireInstance.write(
-            static_cast<uint8_t>(data->Value()))));
+        if (args[0]->IsInt32()) // integer
+        {
+            Local<Integer> data = args[0]->ToInteger();
+            return scope.Close(Uint32::New(wireInstance.write(
+                static_cast<uint8_t>(data->Value()))));
+        }
+        else if (args[0]->IsString()) // string
+        {
+            Local<v8::String> data = args[0]->ToString();
+            std::string str = std::string(*(v8::String::AsciiValue(data)));
+            const char * c = str.c_str();
+            return scope.Close(Uint32::New(wireInstance.write((const uint8_t *)c, strlen(c))));
+        }
+        else
+        {
+            return ThrowException(
+                Exception::TypeError(v8::String::New("When passing in 1 argument to Wire.write, it must be an integer or string."))
+                );
+        }
     }
-    else if (args.Length() == 2)
+    else if (args.Length() == 2 && args[0]->IsArray())
     {
         // translation from a JS array to a uint8_t pointer that write is expecting
-        //Handle<Array> addressArray = Handle<Array>::Cast(args[0]);
-        //uint8_t *inputArray = new uint8_t[addressArray->Length()];
-        //for (uint32_t i = 0; i < addressArray->Length(); i++)
-        //{
-        //    Local<Object> obj = addressArray->CloneElementAt(i);
-        //    inputArray[i] = static_cast<uint8_t>(obj->ToInteger()->Value());
-        //}
+        Handle<Array> addressArray = Handle<Array>::Cast(args[0]);
+        uint8_t *inputArray = new uint8_t[addressArray->Length()];
+        Local<v8::String> data = args[0]->ToString();
 
-        //Local<Integer> cbData = args[1]->ToInteger();
+        for (uint32_t i = 0; i < addressArray->Length(); i++)
+        {
+            Local<Value> value = addressArray->Get(i);
+            inputArray[i] = static_cast<uint8_t>(value->ToInteger()->Value());
+        }
 
-        //return scope.Close(Uint32::New(wireInstance.write(
-        //    inputArray,
-        //    static_cast<uint8_t>(cbData->Value()))));
-        return Undefined();
+        return scope.Close(Uint32::New(wireInstance.write(
+            inputArray, 
+            addressArray->Length())));
     }
     else
     {

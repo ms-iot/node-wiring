@@ -104,25 +104,41 @@ while (1) {
    var wire = galileo.Wire();
    console.log('Wire Begin');
    wire.begin();
-   console.log('Wire BeginTransmission');
-   wire.beginTransmission(44); // transmit to device #44, device address is specified in datasheet
-   console.log('Wire RequestFrom with 2 paramaters');
-   wire.requestFrom();
-   console.log('Wire RequestFrom with 3 paramaters');
-   wire.requestFrom();
-   console.log('Wire Write: 1 argument');
-   wire.write(10);
+   
+   console.log('\nWire BeginTransmission');
+   wire.beginTransmission(0x20); // transmit to device #44, device address is specified in datasheet
+   console.log('Wire Write: 1 integer argument');
+   console.log('Wrote: ' + wire.write(10) + ' bytes');
+   console.log('Wire Write: 1 string argument');
+   console.log('Wrote: ' + wire.write("Hello") + ' bytes');
    console.log('Wire Write: 2 arguments');
    var array = [0x01, 0x02, 0x03, 0x04];
-   wire.write(array);
-   console.log('Wire EndTransmission');
-   wire.endTransmission();
-   console.log('Wire EndTransmission with stop');
-   wire.endTransmission();
+   console.log('Wrote ' + wire.write(array, 4) + ' bytes');
+   
+   console.log('\nWire EndTransmission');
+   console.log('Status of transmission: ' + wire.endTransmission()); 
+   console.log('Wire EndTransmission with true stop');
+   console.log('Status of transmission: ' + wire.endTransmission(true));
+   console.log('Wire EndTransmission with false stop');
+   console.log('Status of transmission: ' + wire.endTransmission(false));
+   console.log('Return values:');
+   console.log('0:success');
+   console.log('1:data too long to fit in transmit buffer');
+   console.log('2:received NACK on transmit of address');
+   console.log('3:received NACK on transmit of data');
+   console.log('4:other error\n');
+   
+   console.log('Wire RequestFrom with 2 paramaters: address and quantity');
+   console.log('bytes ready: ' + wire.requestFrom(0x20, 1));
+   console.log('Wire RequestFrom with 3 paramaters: address, quantity, and true stop');
+   console.log('bytes ready: ' + wire.requestFrom(0x20, 1, true)); // stop is a boolean. true will send a stop message where false will restart the connection keeping it active
+   console.log('Wire RequestFrom with 3 paramaters: address, quantity, and false stop');
+   console.log('bytes ready: ' + wire.requestFrom(0x20, 1, false));
+   
    console.log('Wire Available');
-   wire.available();
+   console.log('Available bytes: ' + wire.available());
    console.log('Wire Read');
-   wire.read();
+   console.log('Read: ' + wire.read());
    console.log('Wire OnReceive');
    wire.onReceive();
    console.log('Wire OnRequest');
