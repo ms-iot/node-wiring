@@ -1,10 +1,10 @@
-var galileo = require("./nodewiring");
+var galileo = require("./nodewiring"); // adds the nodewiring module
 
 var led = 13;
 
-//setup
-galileo.ioInit();
-galileo.pinMode(led, 1);
+// setup
+galileo.ioInit(); // needs to be done in order to initialize the board and pins
+galileo.pinMode(led, galileo.OUTPUT); // sets pin 13 to output
 
 // loop
 while (1) {
@@ -106,7 +106,7 @@ while (1) {
    wire.begin();
    
    console.log('\nWire BeginTransmission');
-   wire.beginTransmission(0x20); // transmit to device #44, device address is specified in datasheet
+   wire.beginTransmission(0x20); // transmit to device, device address is specified in datasheet
    console.log('Wire Write: 1 integer argument');
    console.log('Wrote: ' + wire.write(10) + ' bytes');
    console.log('Wire Write: 1 string argument');
