@@ -14,22 +14,30 @@ using namespace v8;
 Handle<Value> IOInit(const Arguments& args) {
 	HandleScope scope;
 	ArduinoInit();
+
+
 	return Undefined();
 }
 
 Handle<Value> DigitalWrite(const Arguments& args) {
-	HandleScope scope;
-
 	if (args.Length() != 2) {
 		return ThrowException(
 			Exception::TypeError(v8::String::New("Must pass 2 arguments, pin and state"))
 			);
 	}
+
 	Local<Integer> pin = args[0]->ToInteger();
 	Local<Integer> state = args[1]->ToInteger();
 
-	digitalWrite(static_cast<int>(pin->Value()), static_cast<int>(state->Value()));
-
+    try
+    {
+        digitalWrite(static_cast<int>(pin->Value()), static_cast<int>(state->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+	
 	return Undefined();
 }
 
@@ -38,44 +46,61 @@ Handle<Value> DigitalRead(const Arguments& args) {
 
 	if (args.Length() != 1) {
 		return ThrowException(
-			Exception::TypeError(v8::String::New("Must pass 1 argument, the pin to read."))
+			Exception::TypeError(v8::String::New("Must pass 1 argument to digitalRead, the pin to read."))
 			);
 	}
 
 	Local<Integer> pin = args[0]->ToInteger();
-	int value = digitalRead(static_cast<int>(pin->Value()));
 
-
-	return scope.Close(Integer::New(value));
-
+    try
+    {
+        int value = digitalRead(static_cast<int>(pin->Value()));
+        return scope.Close(Integer::New(value));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 }
 
 Handle<Value> AnalogWrite(const Arguments& args) {
-    HandleScope scope;
-
     if (args.Length() != 2) {
 		return ThrowException(
-			Exception::TypeError(v8::String::New("Must pass 2 arguments, pin and value."))
+			Exception::TypeError(v8::String::New("Must pass 2 arguments to AnalogWrite, pin and value."))
 			);
 	}
 	Local<Integer> pin = args[0]->ToInteger();
 	Local<Integer> value = args[1]->ToInteger();
 
-	analogWrite(static_cast<int>(pin->Value()), static_cast<int>(value->Value()));
+    try
+    {
+        analogWrite(static_cast<int>(pin->Value()), static_cast<int>(value->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 
 	return Undefined();
 }
 
 Handle<Value> AnalogWriteResolution(const Arguments& args) {
-    HandleScope scope;
     if (args.Length() != 1) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 1 argument to write resolution."))
+            Exception::TypeError(v8::String::New("Must pass 1 argument to AnalogWriteResolution, the resolution"))
             );
     }
 
     Local<Integer> resolution = args[0]->ToInteger();
-    analogWriteResolution(static_cast<int>(resolution->Value()));
+    
+    try
+    {
+        analogWriteResolution(static_cast<int>(resolution->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 
     return Undefined();
 }
@@ -84,104 +109,157 @@ Handle<Value> AnalogRead(const Arguments& args) {
 	HandleScope scope;
 	if (args.Length() != 1) {
 		return ThrowException(
-			Exception::TypeError(v8::String::New("Must pass 1 argument, the pin to read."))
+			Exception::TypeError(v8::String::New("Must pass 1 argument to AnalogRead, the pin to read."))
 			);
 	}
 
 	Local<Integer> pin = args[0]->ToInteger();
-	int value = analogRead(static_cast<int>(pin->Value()));
-
-	return scope.Close(Integer::New(value));
+    try
+    {
+        int value = analogRead(static_cast<int>(pin->Value()));
+        return scope.Close(Integer::New(value));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+	
 }
 
 Handle<Value> AnalogReadResolution(const Arguments& args) {
-    HandleScope scope;
     if (args.Length() != 1) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 1 argument to read resolution."))
+            Exception::TypeError(v8::String::New("Must pass 1 argument to AnalogReadResolution, the resolution."))
             );
     }
 
     Local<Integer> resolution = args[0]->ToInteger();
-    analogReadResolution(static_cast<int>(resolution->Value()));
-
+    
+    try
+    {
+        analogReadResolution(static_cast<int>(resolution->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
     return Undefined();
 }
 
 Handle<Value> Millis(const Arguments& args) {
     HandleScope scope;
-    unsigned long value = millis();
-    return scope.Close(Uint32::New(value));;
+    try
+    {
+        unsigned long value = millis();
+        return scope.Close(Uint32::New(value));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 }
 
 Handle<Value> Micros(const Arguments& args) {
     HandleScope scope;
-    unsigned long value = micros();
-    return scope.Close(Uint32::New(value));;
+    try
+    {
+        unsigned long value = micros();
+        return scope.Close(Uint32::New(value));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 }
 
 Handle<Value> Delay(const Arguments& args) {
-	HandleScope scope;
 	if (args.Length() != 1) {
 		return ThrowException(
-			Exception::TypeError(v8::String::New("Must pass a value in ms."))
+			Exception::TypeError(v8::String::New("Must pass 1 argument to Delay, the value to in ms."))
 			);
 	}
 	Local<Integer> val = args[0]->ToInteger();
 	unsigned long ms = static_cast<unsigned long>(val->Value());
 
-	delay(ms);
-
+    try
+    {
+        delay(ms);
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+	
 	return Undefined();
 }
 
 
 Handle<Value> DelayMicroseconds(const Arguments& args) {
-    HandleScope scope;
     if (args.Length() != 1) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass a value in microseconds."))
+            Exception::TypeError(v8::String::New("Must pass 1 argument to DelayMicroseconds, the value in microseconds."))
             );
     }
     Local<Uint32> val = args[0]->ToUint32();
     unsigned long ms = static_cast<unsigned long>(val->Value());
-    delayMicroseconds(ms);
+    try
+    {
+        delayMicroseconds(ms);
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
     return Undefined();
 }
 
 Handle<Value> PinMode(const Arguments& args) {
 	if (args.Length() != 2) {
 		return ThrowException(
-			Exception::TypeError(v8::String::New("Must pass 2 arguments, pin and mode."))
+			Exception::TypeError(v8::String::New("Must pass 2 arguments to PinMode, pin and mode."))
 			);
 	}
 	Local<Integer> pin = args[0]->ToInteger();
 	Local<Integer> mode = args[1]->ToInteger();
 
-	pinMode(static_cast<int>(pin->Value()), static_cast<int>(mode->Value()));
+    try
+    {
+        pinMode(static_cast<int>(pin->Value()), static_cast<int>(mode->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 
 	return Undefined();
 }
 
 Handle<Value> ShiftIn(const Arguments& args) {
+    HandleScope scope;
     if (args.Length() != 3) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 3 arguments, data_pin, clock_pin, and bit_order."))
+            Exception::TypeError(v8::String::New("Must pass 3 arguments to ShiftIn, data_pin, clock_pin, and bit_order."))
             );
     }
     Local<Integer> data_pin = args[0]->ToInteger();
     Local<Integer> clock_pin = args[1]->ToInteger();
     Local<Integer> bit_order = args[2]->ToInteger();
 
-    shiftIn(static_cast<uint8_t>(data_pin->Value()), static_cast<uint8_t>(clock_pin->Value()), static_cast<uint8_t>(bit_order->Value()));
-
-    return Undefined();
+    try
+    {
+        return scope.Close(Uint32::New(shiftIn(static_cast<uint8_t>(data_pin->Value()), static_cast<uint8_t>(clock_pin->Value()), static_cast<uint8_t>(bit_order->Value()))));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 }
 
 Handle<Value> ShiftOut(const Arguments& args) {
     if (args.Length() != 4) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 4 arguments, data_pin, clock_pin, bit_order, and byte."))
+            Exception::TypeError(v8::String::New("Must pass 4 arguments to ShiftOut, data_pin, clock_pin, bit_order, and byte."))
             );
     }
     Local<Integer> data_pin = args[0]->ToInteger();
@@ -189,7 +267,14 @@ Handle<Value> ShiftOut(const Arguments& args) {
     Local<Integer> bit_order = args[2]->ToInteger();
     Local<Integer> byte = args[3]->ToInteger();
 
-    shiftOut(static_cast<uint8_t>(data_pin->Value()), static_cast<uint8_t>(clock_pin->Value()), static_cast<uint8_t>(bit_order->Value()), static_cast<uint8_t>(byte->Value()));
+    try
+    {
+        shiftOut(static_cast<uint8_t>(data_pin->Value()), static_cast<uint8_t>(clock_pin->Value()), static_cast<uint8_t>(bit_order->Value()), static_cast<uint8_t>(byte->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 
     return Undefined();
 }
@@ -199,8 +284,15 @@ Handle<Value> Tone(const Arguments& args) {
     if (args.Length() == 2) {
         Local<Integer> pin = args[0]->ToInteger(); // int
         Local<Uint32> frequency = args[1]->ToUint32(); // unsigned int
-        tone(static_cast<int>(pin->Value()), static_cast<int>(frequency->Value()));
-
+        
+        try
+        {
+            tone(static_cast<int>(pin->Value()), static_cast<int>(frequency->Value()));
+        }
+        catch (std::exception e)
+        {
+            return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+        }
         return Undefined();
     }
     else if (args.Length() == 3)
@@ -209,14 +301,20 @@ Handle<Value> Tone(const Arguments& args) {
         Local<Uint32> frequency = args[1]->ToUint32(); // unsigned int
         Local<Uint32> duration = args[2]->ToUint32(); // unsigned long
 
-        tone(static_cast<int>(pin->Value()), static_cast<unsigned int>(frequency->Value()), static_cast<unsigned long>(duration->Value()));
-
+        try
+        {
+            tone(static_cast<int>(pin->Value()), static_cast<unsigned int>(frequency->Value()), static_cast<unsigned long>(duration->Value()));
+        }
+        catch (std::exception e)
+        {
+            return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+        }
         return Undefined();
     }
     else
     {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 2 or 3 arguments (pin and frequency) or (pin, frequency, and duration)."))
+            Exception::TypeError(v8::String::New("Must pass 2 or 3 arguments to Tone, (pin and frequency) or (pin, frequency, and duration)."))
             );
     }
 }
@@ -224,11 +322,19 @@ Handle<Value> Tone(const Arguments& args) {
 Handle<Value> NoTone(const Arguments& args) {
     if (args.Length() != 1) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 1 argument, pin."))
+            Exception::TypeError(v8::String::New("Must pass 1 argument to NoTone, pin."))
             );
     }
     Local<Integer> pin = args[0]->ToInteger();
-    noTone(static_cast<int>(pin->Value()));
+    
+    try
+    {
+        noTone(static_cast<int>(pin->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 
     return Undefined();
 }
@@ -303,13 +409,29 @@ v8::Handle<v8::Value> SpiNodeWrapper::New(const v8::Arguments& args)
 
 v8::Handle<Value> SpiNodeWrapper::SpiBegin(const Arguments& args)
 {
-    spiInstance.begin();
+    try
+    {
+        spiInstance.begin();
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
     return Undefined();
 }
 
 v8::Handle<Value> SpiNodeWrapper::SpiEnd(const Arguments& args)
 {
-    spiInstance.end();
+    try
+    {
+        spiInstance.end();
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
     return Undefined();
 }
 
@@ -317,11 +439,19 @@ v8::Handle<Value> SpiNodeWrapper::SpiSetDataMode(const Arguments& args)
 {
     if (args.Length() != 1) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 1 argument mode."))
+            Exception::TypeError(v8::String::New("Must pass 1 argument to SpiSetDataMode, the mode."))
             );
     }
     Local<Integer> mode = args[0]->ToInteger();
-    spiInstance.setDataMode(static_cast<uint8_t>(mode->Value()));
+    try
+    {
+        spiInstance.setDataMode(static_cast<uint8_t>(mode->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
     return Undefined();
 }
 
@@ -329,11 +459,19 @@ v8::Handle<Value> SpiNodeWrapper::SpiSetClockDivider(const Arguments& args)
 {
     if (args.Length() != 1) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 1 argument clock divider."))
+            Exception::TypeError(v8::String::New("Must pass 1 argument to SpiSetClockDivider, the clock divider."))
             );
     }
     Local<Integer> clockDiv = args[0]->ToInteger();
-    spiInstance.setClockDivider(static_cast<uint8_t>(clockDiv->Value()));
+    try
+    {
+        spiInstance.setClockDivider(static_cast<uint8_t>(clockDiv->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
     return Undefined();
 }
 
@@ -341,11 +479,19 @@ v8::Handle<Value> SpiNodeWrapper::SpiTransfer(const Arguments& args)
 {
     if (args.Length() != 1) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 1 argument the transfer value."))
+            Exception::TypeError(v8::String::New("Must pass 1 argument to SpiTransfer, the transfer value."))
             );
     }
     Local<Integer> value = args[0]->ToInteger();
-    spiInstance.transfer(static_cast<uint8_t>(value->Value()));
+    try
+    {
+        spiInstance.transfer(static_cast<uint8_t>(value->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
     return Undefined();
 }
 
@@ -353,14 +499,316 @@ v8::Handle<Value> SpiNodeWrapper::SpiSetBitOrder(const Arguments& args)
 {
     if (args.Length() != 1) {
         return ThrowException(
-            Exception::TypeError(v8::String::New("Must pass 1 argument the bitOrder."))
+            Exception::TypeError(v8::String::New("Must pass 1 argument to SpiSetBitOrder, the bitOrder."))
             );
     }
     Local<Integer> bitOrder = args[0]->ToInteger();
-    spiInstance.setBitOrder(static_cast<uint8_t>(bitOrder->Value()));
+    try
+    {
+        spiInstance.setBitOrder(static_cast<uint8_t>(bitOrder->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
     return Undefined();
 
 }
+
+/* Wire Wrapper Class and functions */
+
+class WireNodeWrapper : public node::ObjectWrap
+{
+public:
+    static void Init(v8::Handle<v8::Object> exports);
+private:
+    static v8::Persistent<v8::Function> constructor;
+    static TwoWire wireInstance;
+
+    WireNodeWrapper()
+    {}
+    ~WireNodeWrapper()
+    {}
+
+    static v8::Handle<v8::Value> New(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireBegin(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireRequestFrom(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireBeginTransmission(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireEndTransmission(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireWrite(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireAvailable(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireRead(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireOnReceive(const v8::Arguments& args);
+    static v8::Handle<v8::Value> WireOnRequest(const v8::Arguments& args);
+};
+
+// These need to be declared outside of the class as well
+TwoWire WireNodeWrapper::wireInstance;
+Persistent<Function> WireNodeWrapper::constructor;
+
+void WireNodeWrapper::Init(v8::Handle<v8::Object> exports)
+{
+    // Prepare constructor template
+    Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
+    tpl->SetClassName(v8::String::NewSymbol("Wire"));
+    tpl->InstanceTemplate()->SetInternalFieldCount(6);
+
+    // Prototype
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("begin"), FunctionTemplate::New(WireBegin)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("requestFrom"), FunctionTemplate::New(WireRequestFrom)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("beginTransmission"), FunctionTemplate::New(WireBeginTransmission)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("endTransmission"), FunctionTemplate::New(WireEndTransmission)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("write"), FunctionTemplate::New(WireWrite)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("available"), FunctionTemplate::New(WireAvailable)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("read"), FunctionTemplate::New(WireRead)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("onReceive"), FunctionTemplate::New(WireOnReceive)->GetFunction());
+    tpl->PrototypeTemplate()->Set(v8::String::NewSymbol("onRequest"), FunctionTemplate::New(WireOnRequest)->GetFunction());
+
+    constructor = Persistent<Function>::New(tpl->GetFunction());
+    exports->Set(v8::String::NewSymbol("Wire"), constructor);
+}
+
+v8::Handle<v8::Value> WireNodeWrapper::New(const v8::Arguments& args)
+{
+    HandleScope scope;
+
+    if (args.IsConstructCall()) {
+        // Invoked as constructor: `new MyObject(...)`
+        double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
+        WireNodeWrapper* obj = new WireNodeWrapper();
+        obj->Wrap(args.This());
+        return args.This();
+    }
+    else {
+        // Invoked as plain function `MyObject(...)`, turn into construct call.
+        const int argc = 1;
+        Local<Value> argv[argc] = { args[0] };
+        return scope.Close(constructor->NewInstance(argc, argv));
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireBegin(const Arguments& args)
+{
+    try
+    {
+        wireInstance.begin();
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
+    return Undefined();
+}
+
+v8::Handle<Value> WireNodeWrapper::WireBeginTransmission(const Arguments& args)
+{
+    if (args.Length() != 1) {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 1 argument to WireBeginTransmission, the slaveAddress."))
+            );
+    }
+    Local<Integer> slaveAddress = args[0]->ToInteger();
+    try
+    {
+        wireInstance.beginTransmission(static_cast<uint8_t>(slaveAddress->Value()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+    
+    return Undefined();
+}
+
+v8::Handle<Value> WireNodeWrapper::WireEndTransmission(const Arguments& args)
+{
+    HandleScope scope;
+    if (args.Length() == 0)
+    {
+        try
+        {
+            return scope.Close(Uint32::New(wireInstance.endTransmission()));
+        }
+        catch (std::exception e)
+        {
+            return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+        }
+    }
+    else if (args.Length() == 1)
+    {
+        Local<Integer> sendStop = args[0]->ToInteger();
+        try
+        {
+            return scope.Close(Uint32::New(wireInstance.endTransmission(static_cast<uint8_t>(sendStop->Value()))));
+        }
+        catch (std::exception e)
+        {
+            return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+        }
+    }
+    else
+    {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 0 or 1 argument to WireEndTransmission, the sendStop value"))
+            );
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireRequestFrom(const Arguments& args)
+{
+    HandleScope scope;
+    if (args.Length() == 2)
+    {
+        Local<Integer> address = args[0]->ToInteger();
+        Local<Integer> quantity = args[1]->ToInteger();
+
+        try{
+            return scope.Close(Uint32::New(wireInstance.requestFrom(
+                static_cast<uint8_t>(address->Value()), 
+                static_cast<uint8_t>(quantity->Value()))));
+        }
+        catch (std::exception e)
+        {
+            return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+        }
+    }
+    else if (args.Length() == 3)
+    {
+        Local<Integer> address = args[0]->ToInteger();
+        Local<Integer> quantity = args[1]->ToInteger();
+        Local<Integer> sendStop = args[2]->ToInteger();
+
+        try
+        {
+            return scope.Close(Uint32::New(wireInstance.requestFrom(
+                static_cast<uint8_t>(address->Value()),
+                static_cast<uint8_t>(quantity->Value()),
+                static_cast<uint8_t>(sendStop->Value()))));
+        }
+        catch (std::exception e)
+        {
+            return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+        }
+    }
+    else
+    {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 2 or 3 arguments to WireRequestFrom, (address and quantity) or (address, quantity, and sendStop)"))
+            );
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireWrite(const Arguments& args)
+{
+    HandleScope scope;
+    if (args.Length() == 1)
+    {
+        if (args[0]->IsInt32()) // integer
+        {
+            Local<Integer> data = args[0]->ToInteger();
+            try
+            {
+                return scope.Close(Uint32::New(wireInstance.write(
+                    static_cast<uint8_t>(data->Value()))));
+            }
+            catch (std::exception e)
+            {
+                return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+            }
+        }
+        else if (args[0]->IsString()) // string
+        {
+            Local<v8::String> data = args[0]->ToString();
+            std::string str = std::string(*(v8::String::AsciiValue(data)));
+            const char * c = str.c_str();
+            try
+            {
+                return scope.Close(Uint32::New(wireInstance.write((const uint8_t *)c, strlen(c))));
+            }
+            catch (std::exception e)
+            {
+                return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+            }
+        }
+        else
+        {
+            return ThrowException(
+                Exception::TypeError(v8::String::New("When passing in 1 argument to Wire.write, it must be an integer or string."))
+                );
+        }
+    }
+    else if (args.Length() == 2 && args[0]->IsArray())
+    {
+        // translation from a JS array to a uint8_t pointer that write is expecting
+        Handle<Array> addressArray = Handle<Array>::Cast(args[0]);
+        uint8_t *inputArray = new uint8_t[addressArray->Length()];
+        Local<v8::String> data = args[0]->ToString();
+
+        for (uint32_t i = 0; i < addressArray->Length(); i++)
+        {
+            Local<Value> value = addressArray->Get(i);
+            inputArray[i] = static_cast<uint8_t>(value->ToInteger()->Value());
+        }
+
+        try
+        {
+            return scope.Close(Uint32::New(wireInstance.write(
+                inputArray, 
+                static_cast<uint8_t>(args[1]->ToInteger()->Value()))));
+        }
+        catch (std::exception e)
+        {
+            return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+        }
+    }
+    else
+    {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 1 or 2 arguments to WireWrite, (integer or string) or (Array and size)"))
+            );
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireAvailable(const Arguments& args)
+{
+    HandleScope scope;
+    try
+    {
+        return scope.Close(Uint32::New(wireInstance.available()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireRead(const Arguments& args)
+{
+    HandleScope scope;
+    try
+    {
+        return scope.Close(Uint32::New(wireInstance.read()));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
+}
+
+v8::Handle<Value> WireNodeWrapper::WireOnReceive(const Arguments& args)
+{
+    Log("FEATURE UNAVAILABLE: Galileo cannot act as I2C slave device!");
+    return Undefined();
+}
+
+v8::Handle<Value> WireNodeWrapper::WireOnRequest(const Arguments& args)
+{
+    Log("FEATURE UNAVAILABLE: Galileo cannot act as I2C slave device!");
+    return Undefined();
+}
+
 
 /*
 Export all the functions for module
@@ -437,6 +885,7 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
     target->Set(v8::String::New("SPI_CLOCK_DIV_DEFAULT"), v8::Number::New(SPI_CLOCK_DIV_DEFAULT));
 
     SpiNodeWrapper::Init(target);
+    WireNodeWrapper::Init(target);
 }
 
 
