@@ -1,0 +1,28 @@
+{
+  "name": "ms-iot-wiring",
+  "version": "0.0.0",
+  "description": "Provides Wiring APIs from the Microsoft.IoT.Galileo.NativeWiring SDK to the node.js environment",
+  "main": "./Debug/ms-iot-wiring.node",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ms-iot/node-wiring.git"
+  },
+  "keywords": [
+    "wiring",
+    "microsoft",
+    "windows",
+    "hardware"
+  ],
+  "author": "Microsoft Open Technologies, Inc.",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/ms-iot/node-wiring/issues"
+  },
+  "homepage": "https://github.com/ms-iot/node-wiring",
+  "dependencies": {
+    "package.json": "0.0.0"
+  }
+}

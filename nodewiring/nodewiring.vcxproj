@@ -45,6 +45,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\node-v0.10.32\src;C:\node-v0.10.32\deps\v8\include;C:\node-v0.10.32\deps\uv\include;$(IncludePath)</IncludePath>
     <TargetExt>.node</TargetExt>
+    <TargetName>ms-iot-wiring</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
