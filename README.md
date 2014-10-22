@@ -1,10 +1,9 @@
-node-wiring
+ms-iot-wiring
 ===========
 
 Wiring API implementation for Node.js
 
 This package allows you to control the Intel Galileo natively with Node.js
-
 
 
 # Building From Source
@@ -26,35 +25,44 @@ This package allows you to control the Intel Galileo natively with Node.js
 * Build the project
 * Copy the `nodewiring.node` folder from the Debug directory to your Galileo.
 
+# Publishing the Module
+* Run `npm pack` in the folder that contains the package.json
+* This will create a file (ms-iot-wiring-[version].tgz)
+* Run 'npm login' to login with your npmjs.org credentials
+* Run `npm publish` to publish this to npm
+
 # Using the Module
 This module can be required at the top of your node application.
 
 ## HelloBlinky
 
 ```
-var io = require("./nodewiring");
+var galileo = require("./ms-iot-wiring");
 
 var led = 13;
 
 //setup
-io.ioInit()
-io.pinMode(led, 1);
+galileo.ioInit()
+galileo.pinMode(led, 1);
 
 // loop
 while (1) {
-   io.digitalWrite(13, 0);
-   io.delay(500);
-   io.digitalWrite(13, 1);
-   io.delay(500);
+   galileo.digitalWrite(13, 0);
+   galileo.delay(500);
+   galileo.digitalWrite(13, 1);
+   galileo.delay(500);
 }
 ```
 
 Include the `nodewiring.node` file in the same directory as your application file.
 ```js
-var io = require("./nodewiring");
+var galileo = require("./nodewiring");
 ```
 
 ## API
+
+**This exposes GPIO, Analog, I2C, and SPI APIs currently.**
+> More information on using these APIs can be found in test.js
 
 **ioInit()**
 
@@ -70,7 +78,7 @@ var io = require("./nodewiring");
 
 Example:
 ```js
-io.digitalWrite(13, 1);
+galileo.digitalWrite(13, 1);
 ```
 
 **digitalRead(pin)**
@@ -79,7 +87,7 @@ io.digitalWrite(13, 1);
 
 Example:
 ```js
-io.digitalRead(6);
+galileo.digitalRead(6);
 ```
 
 **analogWrite(pin, value)**
@@ -88,7 +96,7 @@ io.digitalRead(6);
 
 Example:
 ```js
-io.analogWrite(6, 255);
+galileo.analogWrite(6, 255);
 ```
 
 **analogRead(pin)**
@@ -97,6 +105,6 @@ io.analogWrite(6, 255);
 
 Example:
 ```js
-io.analogRead(14);
+galileo.analogRead(14);
 ```
 

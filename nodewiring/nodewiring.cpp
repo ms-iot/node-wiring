@@ -74,7 +74,7 @@ Handle<Value> AnalogWrite(const Arguments& args) {
 
     try
     {
-        analogWrite(static_cast<int>(pin->Value()), static_cast<int>(value->Value()));
+        analogWrite(static_cast<uint8_t>(pin->Value()), static_cast<uint32_t>(value->Value()));
     }
     catch (std::exception e)
     {
@@ -889,4 +889,4 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
 }
 
 
-NODE_MODULE(nodewiring, init)
+NODE_MODULE(ms_iot_wiring, init)

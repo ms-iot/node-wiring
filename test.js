@@ -1,4 +1,4 @@
-var galileo = require("./nodewiring"); // adds the nodewiring module
+var galileo = require("ms-iot-wiring"); // adds the ms-iot-wiring module
 
 var led = 13;
 
