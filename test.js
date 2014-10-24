@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved.
+// Licensed under the MIT License. 
+// See License.txt in the project root for license information.
+
 var galileo = require("ms-iot-wiring"); // adds the ms-iot-wiring module
 
 var led = 13;
@@ -48,7 +52,7 @@ while (1) {
    
    console.log('Millis: %d', galileo.millis());
    console.log('Micros: %d', galileo.micros());
-
+   
    // shift in: datapin, clockpin, bitorder
    console.log('ShiftIn');
    galileo.shiftIn(1, 2, galileo.LSBFIRST);
