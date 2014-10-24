@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Open Technologies, Inc.  All rights reserved.
+// Licensed under the MIT License. 
+// See License.txt in the project root for license information.
+
 #include "stdafx.h"
 
 #pragma comment(lib, "node")
@@ -6,6 +10,7 @@
 #include <Windows.h>
 #include "arduino.h"
 #include "spi.h"
+#include "PulseIn.h"
 
 using namespace node;
 using namespace v8;

@@ -3,8 +3,8 @@ ms-iot-wiring
 
 Wiring API implementation for Node.js
 
-This package allows you to control the Intel Galileo natively with Node.js
-
+This package allows you to control the Intel Galileo natively with Node.js by porting some of the Microsoft.IoT.Galileo.NativeWiring SDK found here:
+https://github.com/ms-iot/galileo-sdk
 
 # Building From Source
 * Clone this repo
@@ -23,12 +23,16 @@ This package allows you to control the Intel Galileo natively with Node.js
         * `%user directory%\.node-gyp\%node version%\ia32\node.lib`
     * In `General` change `Target Extension` to `.node`
 * Build the project
-* Copy the `nodewiring.node` folder from the Debug directory to your Galileo.
+* Copy the `ms-iot-wiring.node` folder from the Debug directory to your Galileo.
+* Include the `ms-iot-wiring.node` file in the same directory as your application file.
+```js
+var galileo = require("./ms-iot-wiring");
+```
 
 # Publishing the Module
 * Run `npm pack` in the folder that contains the package.json
 * This will create a file (ms-iot-wiring-[version].tgz)
-* Run 'npm login' to login with your npmjs.org credentials
+* Run `npm login` to login with your npmjs.org credentials
 * Run `npm publish` to publish this to npm
 
 # Using the Module
@@ -54,57 +58,10 @@ while (1) {
 }
 ```
 
-Include the `nodewiring.node` file in the same directory as your application file.
-```js
-var galileo = require("./nodewiring");
-```
-
 ## API
 
 **This exposes GPIO, Analog, I2C, and SPI APIs currently.**
-> More information on using these APIs can be found in test.js
+> Examples for using these APIs can be found in test.js
 
 **ioInit()**
-
 > Initializes board this must be run first
-
-**pinMode(pin, 1|0)**
-
-> Sets mode of pin 0 (INPUT) or 1 (OUTPUT)
-
-**digitalWrite(pin, 1|0)**
-
-> Sets the pin to 1 or 0 (HIGH or LOW)
-
-Example:
-```js
-galileo.digitalWrite(13, 1);
-```
-
-**digitalRead(pin)**
-
-> Returns the value of the pin, 1 or 0 (Our SDK reads HIGH and when connected to ground reads LOW)
-
-Example:
-```js
-galileo.digitalRead(6);
-```
-
-**analogWrite(pin, value)**
-
-> Writes value to the analog pin
-
-Example:
-```js
-galileo.analogWrite(6, 255);
-```
-
-**analogRead(pin)**
-
-> Returns value read from analog pin
-
-Example:
-```js
-galileo.analogRead(14);
-```
-
