@@ -39,7 +39,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <NuGetPackageImportStamp>4038ad84</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>a1b8e60e</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -113,12 +113,14 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Microsoft.IoT.Galileo.Arduino.1.0.6-alpha\build\native\Microsoft.IoT.Galileo.Arduino.targets" Condition="Exists('..\packages\Microsoft.IoT.Galileo.Arduino.1.0.6-alpha\build\native\Microsoft.IoT.Galileo.Arduino.targets')" />
+    <Import Project="..\packages\Microsoft.IoT.NativeWiring.1.0.0-nightly20141111\build\native\Microsoft.IoT.NativeWiring.targets" Condition="Exists('..\packages\Microsoft.IoT.NativeWiring.1.0.0-nightly20141111\build\native\Microsoft.IoT.NativeWiring.targets')" />
+    <Import Project="..\packages\Microsoft.IoT.SDKFromArduino.1.0.0-nightly20141113\build\native\Microsoft.IoT.SDKFromArduino.targets" Condition="Exists('..\packages\Microsoft.IoT.SDKFromArduino.1.0.0-nightly20141113\build\native\Microsoft.IoT.SDKFromArduino.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.IoT.Galileo.Arduino.1.0.6-alpha\build\native\Microsoft.IoT.Galileo.Arduino.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.IoT.Galileo.Arduino.1.0.6-alpha\build\native\Microsoft.IoT.Galileo.Arduino.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.IoT.NativeWiring.1.0.0-nightly20141111\build\native\Microsoft.IoT.NativeWiring.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.IoT.NativeWiring.1.0.0-nightly20141111\build\native\Microsoft.IoT.NativeWiring.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.IoT.SDKFromArduino.1.0.0-nightly20141113\build\native\Microsoft.IoT.SDKFromArduino.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.IoT.SDKFromArduino.1.0.0-nightly20141113\build\native\Microsoft.IoT.SDKFromArduino.targets'))" />
   </Target>
 </Project>
