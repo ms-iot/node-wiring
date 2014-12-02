@@ -2,7 +2,7 @@
 // Licensed under the MIT License. 
 // See License.txt in the project root for license information.
 
-var galileo = require("ms-iot-wiring"); // adds the ms-iot-wiring module
+var galileo = require("./ms-iot-wiring"); // adds the ms-iot-wiring module
 
 var led = 13;
 
