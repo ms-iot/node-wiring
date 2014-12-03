@@ -2,12 +2,12 @@
 // Licensed under the MIT License. 
 // See License.txt in the project root for license information.
 
-var galileo = require("ms-iot-wiring"); // adds the ms-iot-wiring module
+var galileo = require("./ms-iot-wiring"); // adds the ms-iot-wiring module
 
 var led = 13;
 
 // setup
-galileo.ioInit(); // needs to be done in order to initialize the board and pins
+//galileo.ioInit(); // needs to be done in order to initialize the board and pins
 galileo.pinMode(led, galileo.OUTPUT); // sets pin 13 to output
 
 // loop
@@ -28,8 +28,8 @@ while (1) {
    console.log("LSBFIRST: %d", galileo.LSBFIRST);
    console.log("MSBFIRST: %d", galileo.MSBFIRST);
    
-   console.log("WLED: %d", galileo.WLED);
-   console.log("LED_BUILTIN: %d", galileo.LED_BUILTIN);
+   // console.log("WLED: %d", galileo.WLED);
+   // console.log("LED_BUILTIN: %d", galileo.LED_BUILTIN);
    
    console.log("PI: %d", galileo.PI);
    console.log("HALF_PI: %d", galileo.HALF_PI);
@@ -69,7 +69,7 @@ while (1) {
    galileo.analogWrite(3, 4095);
    
    console.log("Temperature: ");
-   var temp = galileo.analogRead(-1);
+   var temp = galileo.analogRead(1);
    console.log(temp);
    console.log("\n");
    
@@ -110,21 +110,24 @@ while (1) {
    wire.begin();
    
    console.log('\nWire BeginTransmission');
-   wire.beginTransmission(0x20); // transmit to device, device address is specified in datasheet
+   wire.beginTransmission(0x25); // transmit to device, device address is specified in datasheet
+   
    console.log('Wire Write: 1 integer argument');
    console.log('Wrote: ' + wire.write(10) + ' bytes');
-   console.log('Wire Write: 1 string argument');
-   console.log('Wrote: ' + wire.write("Hello") + ' bytes');
+   console.log('Wire EndTransmission');
+   console.log('Status of transmission: ' + wire.endTransmission()); 
+   
+   console.log('\nwire write: 1 string argument');
+   console.log('wrote: ' + wire.write("hello") + ' bytes');
+   console.log('wire endtransmission with true stop');
+   console.log('status of transmission: ' + wire.endTransmission(true));
+
    console.log('Wire Write: 2 arguments');
    var array = [0x01, 0x02, 0x03, 0x04];
-   console.log('Wrote ' + wire.write(array, 4) + ' bytes');
+   console.log('wrote ' + wire.write(array, 4) + ' bytes');
+   console.log('wire endtransmission with false stop');
+   console.log('status of transmission: ' + wire.endTransmission(false));
    
-   console.log('\nWire EndTransmission');
-   console.log('Status of transmission: ' + wire.endTransmission()); 
-   console.log('Wire EndTransmission with true stop');
-   console.log('Status of transmission: ' + wire.endTransmission(true));
-   console.log('Wire EndTransmission with false stop');
-   console.log('Status of transmission: ' + wire.endTransmission(false));
    console.log('Return values:');
    console.log('0:success');
    console.log('1:data too long to fit in transmit buffer');
@@ -133,11 +136,11 @@ while (1) {
    console.log('4:other error\n');
    
    console.log('Wire RequestFrom with 2 paramaters: address and quantity');
-   console.log('bytes ready: ' + wire.requestFrom(0x20, 1));
+   console.log('bytes ready: ' + wire.requestFrom(0x25, 1));
    console.log('Wire RequestFrom with 3 paramaters: address, quantity, and true stop');
-   console.log('bytes ready: ' + wire.requestFrom(0x20, 1, true)); // stop is a boolean. true will send a stop message where false will restart the connection keeping it active
-   console.log('Wire RequestFrom with 3 paramaters: address, quantity, and false stop');
-   console.log('bytes ready: ' + wire.requestFrom(0x20, 1, false));
+   console.log('bytes ready: ' + wire.requestFrom(0x25, 1, true)); // stop is a boolean. true will send a stop message where false will restart the connection keeping it active
+   console.log('wire requestfrom with 3 paramaters: address, quantity, and false stop');
+   console.log('bytes ready: ' + wire.requestFrom(0x25, 1, false));
    
    console.log('Wire Available');
    console.log('Available bytes: ' + wire.available());
@@ -145,7 +148,7 @@ while (1) {
    console.log('Read: ' + wire.read());
    console.log('Wire OnReceive');
    wire.onReceive();
-   console.log('Wire OnRequest');
+   console.log('\nWire OnRequest');
    wire.onRequest();
    
    console.log('\n----- End of Loop -----\n\n');

@@ -16,13 +16,13 @@ using namespace node;
 using namespace v8;
 
 // Arduino Functions
-Handle<Value> IOInit(const Arguments& args) {
-	HandleScope scope;
-	ArduinoInit();
-
-
-	return Undefined();
-}
+//Handle<Value> IOInit(const Arguments& args) {
+//	HandleScope scope;
+//	ArduinoInit();
+//
+//
+//	return Undefined();
+//}
 
 Handle<Value> DigitalWrite(const Arguments& args) {
 	if (args.Length() != 2) {
@@ -150,6 +150,28 @@ Handle<Value> AnalogReadResolution(const Arguments& args) {
     }
     
     return Undefined();
+}
+
+Handle<Value> PulseIn(const Arguments& args){
+    HandleScope scope;
+    if (args.Length() != 3) {
+        return ThrowException(
+            Exception::TypeError(v8::String::New("Must pass 3 arguments to PulseIn, pin, value, and timeout in microseconds."))
+            );
+    }
+
+    Local<Integer> pin = args[0]->ToInteger();
+    Local<Integer> value = args[1]->ToInteger();
+    Local<Integer> timeout = args[2]->ToInteger();
+
+    try
+    {
+        return scope.Close(v8::Uint32::NewFromUnsigned(pulseIn(pin->Value(), value->Value(), static_cast<unsigned long>(timeout->Value()))));
+    }
+    catch (std::exception e)
+    {
+        return ThrowException(Exception::TypeError(v8::String::New(e.what())));
+    }
 }
 
 Handle<Value> Millis(const Arguments& args) {
@@ -727,10 +749,9 @@ v8::Handle<Value> WireNodeWrapper::WireWrite(const Arguments& args)
         {
             Local<v8::String> data = args[0]->ToString();
             std::string str = std::string(*(v8::String::AsciiValue(data)));
-            const char * c = str.c_str();
             try
             {
-                return scope.Close(Uint32::New(wireInstance.write((const uint8_t *)c, strlen(c))));
+                return scope.Close(Uint32::New(wireInstance.write(const_cast<PCHAR>(str.c_str()))));
             }
             catch (std::exception e)
             {
@@ -837,15 +858,15 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
     target->Set(v8::String::New("LSBFIRST"), v8::Number::New(LSBFIRST));
     target->Set(v8::String::New("MSBFIRST"), v8::Number::New(MSBFIRST));
 
-    target->Set(v8::String::New("WLED"), v8::Number::New(WLED));
-    target->Set(v8::String::New("LED_BUILTIN"), v8::Number::New(LED_BUILTIN));
+    //target->Set(v8::String::New("WLED"), v8::Number::New(WLED));
+    //target->Set(v8::String::New("LED_BUILTIN"), v8::Number::New(LED_BUILTIN));
 
     target->Set(v8::String::New("PI"), v8::Number::New(PI));
     target->Set(v8::String::New("HALF_PI"), v8::Number::New(HALF_PI));
     target->Set(v8::String::New("TWO_PI"), v8::Number::New(TWO_PI));
 
     // Arduino Functions
-    target->Set(v8::String::NewSymbol("ioInit"), FunctionTemplate::New(IOInit)->GetFunction());
+    //target->Set(v8::String::NewSymbol("ioInit"), FunctionTemplate::New(IOInit)->GetFunction());
     target->Set(v8::String::NewSymbol("pinMode"), FunctionTemplate::New(PinMode)->GetFunction());
     target->Set(v8::String::NewSymbol("digitalWrite"), FunctionTemplate::New(DigitalWrite)->GetFunction());
     target->Set(v8::String::NewSymbol("digitalRead"), FunctionTemplate::New(DigitalRead)->GetFunction());
@@ -853,6 +874,7 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
     target->Set(v8::String::NewSymbol("analogWriteResolution"), FunctionTemplate::New(AnalogWriteResolution)->GetFunction());
     target->Set(v8::String::NewSymbol("analogRead"), FunctionTemplate::New(AnalogRead)->GetFunction());
     target->Set(v8::String::NewSymbol("analogReadResolution"), FunctionTemplate::New(AnalogReadResolution)->GetFunction());
+    target->Set(v8::String::NewSymbol("pulseIn"), FunctionTemplate::New(PulseIn)->GetFunction());
     target->Set(v8::String::NewSymbol("delay"), FunctionTemplate::New(Delay)->GetFunction());
     target->Set(v8::String::NewSymbol("delayMicroseconds"), FunctionTemplate::New(DelayMicroseconds)->GetFunction());
     target->Set(v8::String::NewSymbol("millis"), FunctionTemplate::New(Millis)->GetFunction());
@@ -870,15 +892,15 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
     target->Set(v8::String::New("SPI_MODE2"), v8::Number::New(SPI_MODE2));
     target->Set(v8::String::New("SPI_MODE3"), v8::Number::New(SPI_MODE3));
 
-    target->Set(v8::String::New("SPI1_MOSI"), v8::Number::New(SPI1_MOSI));
-    target->Set(v8::String::New("SPI1_MISO"), v8::Number::New(SPI1_MISO));
-    target->Set(v8::String::New("SPI1_SCK"), v8::Number::New(SPI1_SCK));
+    //target->Set(v8::String::New("SPI1_MOSI"), v8::Number::New(SPI1_MOSI));
+    //target->Set(v8::String::New("SPI1_MISO"), v8::Number::New(SPI1_MISO));
+    //target->Set(v8::String::New("SPI1_SCK"), v8::Number::New(SPI1_SCK));
 
-    target->Set(v8::String::New("SPI1_SPEED"), v8::Number::New(SPI1_SPEED));
-    target->Set(v8::String::New("SPI1_BITS_PER_WORD"), v8::Number::New(SPI1_BITS_PER_WORD));
-    target->Set(v8::String::New("SPI1_MODE"), v8::Number::New(SPI1_MODE));
+    //target->Set(v8::String::New("SPI1_SPEED"), v8::Number::New(SPI1_SPEED));
+    //target->Set(v8::String::New("SPI1_BITS_PER_WORD"), v8::Number::New(SPI1_BITS_PER_WORD));
+    //target->Set(v8::String::New("SPI1_MODE"), v8::Number::New(SPI1_MODE));
 
-    target->Set(v8::String::New("SPI_CLOCK_DIV_MIN"), v8::Number::New(SPI_CLOCK_DIV_MIN));
+    //target->Set(v8::String::New("SPI_CLOCK_DIV_MIN"), v8::Number::New(SPI_CLOCK_DIV_MIN));
     target->Set(v8::String::New("SPI_CLOCK_DIV2"), v8::Number::New(SPI_CLOCK_DIV2));
     target->Set(v8::String::New("SPI_CLOCK_DIV4"), v8::Number::New(SPI_CLOCK_DIV4));
     target->Set(v8::String::New("SPI_CLOCK_DIV8"), v8::Number::New(SPI_CLOCK_DIV8));
@@ -886,8 +908,8 @@ extern "C" void NODE_EXTERN init(Handle<Object> target)
     target->Set(v8::String::New("SPI_CLOCK_DIV32"), v8::Number::New(SPI_CLOCK_DIV32));
     target->Set(v8::String::New("SPI_CLOCK_DIV64"), v8::Number::New(SPI_CLOCK_DIV64));
     target->Set(v8::String::New("SPI_CLOCK_DIV128"), v8::Number::New(SPI_CLOCK_DIV128));
-    target->Set(v8::String::New("SPI_CLOCK_DIV_MAX"), v8::Number::New(SPI_CLOCK_DIV_MAX));
-    target->Set(v8::String::New("SPI_CLOCK_DIV_DEFAULT"), v8::Number::New(SPI_CLOCK_DIV_DEFAULT));
+    //target->Set(v8::String::New("SPI_CLOCK_DIV_MAX"), v8::Number::New(SPI_CLOCK_DIV_MAX));
+    //target->Set(v8::String::New("SPI_CLOCK_DIV_DEFAULT"), v8::Number::New(SPI_CLOCK_DIV_DEFAULT));
 
     SpiNodeWrapper::Init(target);
     WireNodeWrapper::Init(target);

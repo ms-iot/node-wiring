@@ -46,14 +46,13 @@ var galileo = require("./ms-iot-wiring");
 var led = 13;
 
 //setup
-galileo.ioInit()
 galileo.pinMode(led, 1);
 
 // loop
 while (1) {
-   galileo.digitalWrite(13, 0);
+   galileo.digitalWrite(led, 0);
    galileo.delay(500);
-   galileo.digitalWrite(13, 1);
+   galileo.digitalWrite(led, 1);
    galileo.delay(500);
 }
 ```
