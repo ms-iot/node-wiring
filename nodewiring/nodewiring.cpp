@@ -164,9 +164,12 @@ Handle<Value> PulseIn(const Arguments& args){
     Local<Integer> value = args[1]->ToInteger();
     Local<Integer> timeout = args[2]->ToInteger();
 
+    int pulseInPin = (int)pin->Value();
+    int pulseInValue = (int)value->Value();
+
     try
     {
-        return scope.Close(v8::Uint32::NewFromUnsigned(pulseIn(pin->Value(), value->Value(), static_cast<unsigned long>(timeout->Value()))));
+        return scope.Close(v8::Uint32::NewFromUnsigned(pulseIn(pulseInPin, pulseInValue, static_cast<unsigned long>(timeout->Value()))));
     }
     catch (std::exception e)
     {

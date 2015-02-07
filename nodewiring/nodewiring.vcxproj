@@ -43,7 +43,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\node-v0.10.32\src;C:\node-v0.10.32\deps\v8\include;C:\node-v0.10.32\deps\uv\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\node-v0.10.36\src;C:\node-v0.10.36\deps\v8\include;C:\node-v0.10.36\deps\uv\include;$(IncludePath)</IncludePath>
     <TargetExt>.node</TargetExt>
     <TargetName>ms-iot-wiring</TargetName>
   </PropertyGroup>
@@ -62,7 +62,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>mincore.lib;c:\node-v0.10.32\Release\node.lib</AdditionalDependencies>
+      <AdditionalDependencies>mincore.lib;c:\node-v0.10.36\Release\node.lib</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:ole32.lib /NODEFAULTLIB:kernel32.lib /NODEFAULTLIB:user32.lib /NODEFAULTLIB:advapi32.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -113,14 +113,9 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Microsoft.IoT.NativeWiring.1.0.0-nightly20141121\build\native\Microsoft.IoT.NativeWiring.targets" Condition="Exists('..\packages\Microsoft.IoT.NativeWiring.1.0.0-nightly20141121\build\native\Microsoft.IoT.NativeWiring.targets')" />
-    <Import Project="..\packages\Microsoft.IoT.SDKFromArduino.1.0.0-nightly20141119\build\native\Microsoft.IoT.SDKFromArduino.targets" Condition="Exists('..\packages\Microsoft.IoT.SDKFromArduino.1.0.0-nightly20141119\build\native\Microsoft.IoT.SDKFromArduino.targets')" />
+    <Import Project="..\packages\Microsoft.IoT.SDKFromArduino.1.0.0\build\native\Microsoft.IoT.SDKFromArduino.targets" Condition="Exists('..\packages\Microsoft.IoT.SDKFromArduino.1.0.0\build\native\Microsoft.IoT.SDKFromArduino.targets')" />
+    <Import Project="..\packages\Microsoft.IoT.NativeWiring.1.0.0\build\native\Microsoft.IoT.NativeWiring.targets" Condition="Exists('..\packages\Microsoft.IoT.NativeWiring.1.0.0\build\native\Microsoft.IoT.NativeWiring.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.IoT.NativeWiring.1.0.0-nightly20141121\build\native\Microsoft.IoT.NativeWiring.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.IoT.NativeWiring.1.0.0-nightly20141121\build\native\Microsoft.IoT.NativeWiring.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.IoT.SDKFromArduino.1.0.0-nightly20141119\build\native\Microsoft.IoT.SDKFromArduino.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.IoT.SDKFromArduino.1.0.0-nightly20141119\build\native\Microsoft.IoT.SDKFromArduino.targets'))" />
   </Target>
 </Project>
