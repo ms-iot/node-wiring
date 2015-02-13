@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nodewiring", "nodewiring\nodewiring.vcxproj", "{243C6D0E-D9A0-44AA-971A-5B2A9A4FA76E}"
 EndProject
@@ -13,6 +13,7 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{243C6D0E-D9A0-44AA-971A-5B2A9A4FA76E}.Debug|Win32.ActiveCfg = Debug|Win32
 		{243C6D0E-D9A0-44AA-971A-5B2A9A4FA76E}.Debug|Win32.Build.0 = Debug|Win32
+		{243C6D0E-D9A0-44AA-971A-5B2A9A4FA76E}.Debug|Win32.Deploy.0 = Debug|Win32
 		{243C6D0E-D9A0-44AA-971A-5B2A9A4FA76E}.Release|Win32.ActiveCfg = Release|Win32
 		{243C6D0E-D9A0-44AA-971A-5B2A9A4FA76E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
